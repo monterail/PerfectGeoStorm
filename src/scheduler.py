@@ -105,7 +105,7 @@ async def execute_monitoring_run(
     await _create_run_record(run_id, project_id, trigger_type, total_queries, now_iso)
 
     completed, failed = await _execute_queries(run_id, project_id, terms, providers)
-    await _finalize_run(run_id, schedule_id, completed, failed)
+    await _finalize_run(run_id, project_id, schedule_id, completed, failed)
 
     return run_id
 
@@ -216,7 +216,7 @@ async def _execute_single_query(  # noqa: PLR0913
     return True
 
 
-async def _finalize_run(run_id: str, schedule_id: str | None, completed: int, failed: int) -> None:
+async def _finalize_run(run_id: str, project_id: str, schedule_id: str | None, completed: int, failed: int) -> None:
     """Update the run record with final status and update schedule timestamp."""
     final_status = "completed" if completed > 0 else "failed"
     completed_at = datetime.now(tz=UTC).isoformat()
@@ -239,6 +239,13 @@ async def _finalize_run(run_id: str, schedule_id: str | None, completed: int, fa
         await db.commit()
 
     logger.info("Run %s finished: status=%s, completed=%d, failed=%d", run_id, final_status, completed, failed)
+
+    if final_status == "completed":
+        try:
+            from src.services.analysis import analyze_run  # noqa: PLC0415
+            await analyze_run(run_id, project_id)
+        except Exception:
+            logger.exception("Analysis pipeline failed for run %s", run_id)
 
 
 async def _store_response(  # noqa: PLR0913
