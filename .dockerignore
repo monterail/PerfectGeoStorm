@@ -1,0 +1,12 @@
+node_modules/
+__pycache__/
+.venv/
+.git/
+.env
+*.db
+data/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.shotgun/
+tests/

@@ -1,0 +1,80 @@
+[project]
+name = "geostorm"
+version = "0.1.0"
+description = "Monitor how AI systems perceive and recommend your software"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic",
+    "pydantic[email]",
+    "aiosqlite",
+    "apscheduler>=4.0.0a1",
+    "httpx",
+    "aiosmtplib",
+    "sqlalchemy[asyncio]",
+    "pydantic-ai",
+]
+
+[project.optional-dependencies]
+slack = [
+    "slack-sdk",
+]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+    "mypy",
+]
+
+[tool.uv]
+prerelease = "allow"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+extend-exclude = [".shotgun"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "W",    # pycodestyle warnings
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "ANN",  # flake8-annotations
+    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "COM",  # flake8-commas
+    "C4",   # flake8-comprehensions
+    "DTZ",  # flake8-datetimez
+    "ISC",  # flake8-implicit-str-concat
+    "PIE",  # flake8-pie
+    "PT",   # flake8-pytest-style
+    "RSE",  # flake8-raise
+    "RET",  # flake8-return
+    "SIM",  # flake8-simplify
+    "TID",  # flake8-tidy-imports
+    "TCH",  # flake8-type-checking
+    "ARG",  # flake8-unused-arguments
+    "ERA",  # eradicate
+    "PLC",  # pylint convention
+    "PLE",  # pylint error
+    "PLR",  # pylint refactor
+    "PLW",  # pylint warning
+    "TRY",  # tryceratops
+    "RUF",  # ruff-specific
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["ANN", "ARG"]
+
+[tool.mypy]
+strict = true
+plugins = ["pydantic.mypy"]
+exclude = [".shotgun"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

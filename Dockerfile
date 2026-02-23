@@ -1,0 +1,35 @@
+FROM python:3.11-slim AS base
+
+# Install Node.js 20 and pnpm
+RUN apt-get update && apt-get install -y curl && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g pnpm && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install UV
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+WORKDIR /app
+
+# Install Python dependencies first (cache layer)
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev
+
+# Build frontend
+COPY web/ ./web/
+WORKDIR /app/web
+RUN pnpm install --frozen-lockfile
+RUN pnpm build
+WORKDIR /app
+
+# Copy application code
+COPY src/ ./src/
+COPY migrations/ ./migrations/
+
+# Create data directory for SQLite
+RUN mkdir -p /app/data
+
+EXPOSE 8080
+
+CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8080"]
