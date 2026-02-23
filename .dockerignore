@@ -1,12 +1,30 @@
-node_modules/
-__pycache__/
-.venv/
+# Version control and CI
 .git/
+.github/
+
+# Environment and config
 .env
-*.db
-data/
+.venv/
+
+# Dependencies
+node_modules/
+*.egg-info/
+
+# Python caches
+__pycache__/
 .mypy_cache/
 .ruff_cache/
 .pytest_cache/
-.shotgun/
+
+# Data and databases
+*.db
+data/
+
+# OS files
+.DS_Store
+
+# Project directories not needed in image
 tests/
+docs/
+scripts/
+.shotgun/
