@@ -240,6 +240,17 @@ class PerceptionScore(BaseModel):
     created_at: datetime
 
 
+class AlertMetadata(BaseModel):
+    """Structured metadata for an alert."""
+
+    threshold: float | None = None
+    current_value: float | None = None
+    previous_value: float | None = None
+    competitor_name: str | None = None
+    term_id: str | None = None
+    run_id: str | None = None
+
+
 class Alert(BaseModel):
     """Generated alert record."""
 
@@ -249,7 +260,7 @@ class Alert(BaseModel):
     severity: AlertSeverity = AlertSeverity.INFO
     title: str = Field(..., min_length=1, max_length=255)
     message: str = Field(..., min_length=1, max_length=2000)
-    metadata_json: str | None = None
+    metadata: AlertMetadata | None = None
     explanation: str | None = None
     is_acknowledged: bool = False
     acknowledged_at: datetime | None = None

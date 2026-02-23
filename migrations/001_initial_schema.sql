@@ -1,7 +1,8 @@
 -- GeoStorm Initial Schema
 -- SQLite with TEXT UUIDs, INTEGER booleans, JSON stored as TEXT
-
-PRAGMA foreign_keys = ON;
+--
+-- Note: PRAGMA foreign_keys is set per-connection in database.py,
+-- not here, because executescript() resets connection state.
 
 -- ============================================================================
 -- Core Tables

@@ -11,7 +11,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from src.database import initialize_database
+from src.database import check_database_health, initialize_database
 
 logger = logging.getLogger(__name__)
 
@@ -50,25 +50,37 @@ app.add_middleware(
 )
 
 # TODO(routes): include routers from src/routes/ when implemented
+# API routers should be included here BEFORE the static file mount and SPA catch-all below.
 
 
 @app.get("/health")
 async def health_check() -> HealthResponse:
-    """Return service health status."""
+    """Return service health status with a real database ping."""
+    db_ok = await check_database_health()
     return HealthResponse(
-        status="ok",
-        database="connected",
-        scheduler="running",
+        status="ok" if db_ok else "degraded",
+        database="connected" if db_ok else "unreachable",
+        scheduler="idle",
     )
 
 
+# Static assets and SPA catch-all MUST be registered after all API routes.
 if _STATIC_DIR.is_dir():
     app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
 
 
 @app.get("/{_full_path:path}")
 async def serve_spa(_full_path: str) -> FileResponse | JSONResponse:
-    """Serve the Astro SSR index for client-side routing."""
+    """Serve the Astro SSR index for client-side routing.
+
+    This catch-all is intentionally registered last so it never
+    shadows /health, /api/*, or /static/* routes.
+    """
+    if _full_path.startswith("api"):
+        return JSONResponse(
+            content={"detail": "Not found"},
+            status_code=404,
+        )
     index_file = _STATIC_DIR / "index.html"
     if index_file.is_file():
         return FileResponse(str(index_file))

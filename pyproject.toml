@@ -13,8 +13,8 @@ dependencies = [
     "apscheduler>=4.0.0a1",
     "httpx",
     "aiosmtplib",
-    "sqlalchemy[asyncio]",
     "pydantic-ai",
+    "pydantic-settings>=2.13.1",
 ]
 
 [project.optional-dependencies]
@@ -65,6 +65,7 @@ select = [
     "PLR",  # pylint refactor
     "PLW",  # pylint warning
     "TRY",  # tryceratops
+    "BLE",  # flake8-blind-except
     "RUF",  # ruff-specific
 ]
 
