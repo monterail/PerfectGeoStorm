@@ -48,9 +48,9 @@ _TERM_IDS = {
 _SCHEDULE_ID = str(uuid.uuid5(_NS, "schedule-demo"))
 
 _PROVIDERS = [
-    ("openrouter", "anthropic/claude-sonnet-4.5"),
+    ("openrouter", "anthropic/claude-sonnet-4.6"),
     ("openrouter", "openai/gpt-5.2"),
-    ("openrouter", "google/gemini-2.5-flash"),
+    ("openrouter", "google/gemini-3-flash-preview"),
 ]
 _PROVIDER_IDS = {
     f"{p[0]}/{p[1]}": str(uuid.uuid5(_NS, f"provider-{p[0]}-{p[1]}"))
