@@ -6,6 +6,7 @@ import { usePerception } from "@/hooks/usePerception"
 import { useRuns } from "@/hooks/useRuns"
 import { cn } from "@/lib/utils"
 import { getRunDisplay } from "@/lib/runs"
+import type { Run } from "@/schemas/run"
 
 interface SignalPanelProps {
 	projectId: string
