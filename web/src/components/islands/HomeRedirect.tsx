@@ -24,8 +24,8 @@ function HomeRedirectInner() {
 	useEffect(() => {
 		if (!projects) return
 		if (projects.length > 0) {
-			const demo = projects.find((p) => p.is_demo)
-			window.location.href = `/projects/${(demo ?? projects[0]).id}`
+			const userProject = projects.find((p) => !p.is_demo)
+			window.location.href = `/projects/${(userProject ?? projects[0]).id}`
 		} else {
 			window.location.href = "/projects"
 		}

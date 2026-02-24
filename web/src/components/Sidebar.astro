@@ -1,18 +1,5 @@
 ---
-import { apiFetch } from "@/lib/api"
-
-interface ProjectItem {
-	id: string
-	name: string
-	is_demo: boolean
-}
-
-let projects: ProjectItem[] = []
-try {
-	projects = await apiFetch<ProjectItem[]>("/projects")
-} catch {
-	// API may not be available during SSR build
-}
+import { SidebarProjects } from "./islands/SidebarProjects"
 
 const currentPath = Astro.url.pathname
 ---
@@ -29,29 +16,7 @@ const currentPath = Astro.url.pathname
 			</a>
 		</div>
 		<nav class="flex-1 overflow-y-auto p-2">
-			{projects.length === 0 && (
-				<p class="px-2 py-4 text-center text-sm text-muted-foreground">
-					No projects yet
-				</p>
-			)}
-			{projects.map((project) => (
-				<a
-					href={`/projects/${project.id}`}
-					class:list={[
-						"flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
-						currentPath === `/projects/${project.id}`
-							? "bg-accent text-accent-foreground"
-							: "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-					]}
-				>
-					<span class="truncate flex-1">{project.name}</span>
-					{project.is_demo && (
-						<span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-							Demo
-						</span>
-					)}
-				</a>
-			))}
+			<SidebarProjects client:load currentPath={currentPath} />
 		</nav>
 	</div>
 </aside>

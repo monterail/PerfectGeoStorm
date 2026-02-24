@@ -71,6 +71,21 @@ async def create_project(req: CreateProjectRequest) -> ProjectCreatedResponse:
             " VALUES (?, ?, ?, ?, ?, ?, ?)",
             (schedule_id, project_id, 14, "[0,1,2,3,4]", True, now, now),
         )
+
+        # Default LLM providers so monitoring can run immediately
+        default_providers = [
+            ("openrouter", "anthropic/claude-3.5-sonnet"),
+            ("openrouter", "openai/gpt-4o"),
+            ("openrouter", "google/gemini-2.0-flash"),
+        ]
+        for provider_name, model_name in default_providers:
+            await db.execute(
+                "INSERT INTO llm_providers"
+                " (id, project_id, provider_name, model_name, is_enabled, created_at, updated_at)"
+                " VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (uuid.uuid4().hex, project_id, provider_name, model_name, True, now, now),
+            )
+
         await db.commit()
 
     return ProjectCreatedResponse(
@@ -78,6 +93,7 @@ async def create_project(req: CreateProjectRequest) -> ProjectCreatedResponse:
         name=req.name,
         brand_id=brand_id,
         schedule_id=schedule_id,
+        providers_count=len(default_providers),
         created_at=now,
     )
 

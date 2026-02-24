@@ -141,6 +141,7 @@ class ProjectCreatedResponse(BaseModel):
     name: str
     brand_id: str
     schedule_id: str
+    providers_count: int = 0
     created_at: datetime
 
 
