@@ -64,7 +64,7 @@ async def initialize_database() -> None:
         # Fix broken Gemini model ID in existing databases
         await db.execute(
             "UPDATE llm_providers SET model_name = 'google/gemini-2.5-flash'"
-            " WHERE model_name = 'google/gemini-2.0-flash'"
+            " WHERE model_name = 'google/gemini-2.0-flash'",
         )
         await db.commit()
 

@@ -46,7 +46,7 @@ async def list_projects() -> list[ProjectResponse]:
             FROM projects p
             WHERE p.deleted_at IS NULL
             ORDER BY p.created_at DESC
-            """
+            """,
         )
         rows = await cursor.fetchall()
         return [ProjectResponse(**dict(row)) for row in rows]
