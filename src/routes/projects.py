@@ -33,7 +33,21 @@ _background_tasks: set[asyncio.Task[Any]] = set()
 @router.get("/projects")
 async def list_projects() -> list[ProjectResponse]:
     async with get_db_connection() as db:
-        cursor = await db.execute("SELECT * FROM projects WHERE deleted_at IS NULL ORDER BY created_at DESC")
+        cursor = await db.execute(
+            """
+            SELECT p.*,
+                (SELECT ps.overall_score
+                 FROM perception_scores ps
+                 WHERE ps.project_id = p.id
+                 ORDER BY ps.created_at DESC LIMIT 1) as latest_score,
+                (SELECT COUNT(*) FROM runs r WHERE r.project_id = p.id) as run_count,
+                (SELECT COUNT(*) FROM alerts a
+                 WHERE a.project_id = p.id AND a.is_acknowledged = 0) as active_alert_count
+            FROM projects p
+            WHERE p.deleted_at IS NULL
+            ORDER BY p.created_at DESC
+            """
+        )
         rows = await cursor.fetchall()
         return [ProjectResponse(**dict(row)) for row in rows]
 
@@ -76,7 +90,7 @@ async def create_project(req: CreateProjectRequest) -> ProjectCreatedResponse:
         default_providers = [
             ("openrouter", "anthropic/claude-3.5-sonnet"),
             ("openrouter", "openai/gpt-4o"),
-            ("openrouter", "google/gemini-2.0-flash"),
+            ("openrouter", "google/gemini-2.5-flash"),
         ]
         for provider_name, model_name in default_providers:
             await db.execute(
