@@ -214,6 +214,16 @@ GeoStorm itself is free. The only cost is the AI API usage through OpenRouter. A
 
 </details>
 
+<details>
+<summary><strong>Couldn't I do this with OpenClaw?</strong></summary>
+<br>
+
+Different problem. OpenClaw is an AI agent that executes tasks for you. The monitoring tools around it (ClawMetry, OpenClaw Dashboard) observe what *your agents* are doing -- token costs, session logs, sub-agent activity. That's agent observability.
+
+GeoStorm monitors what *AI models say about your software*. It asks ChatGPT, Claude, and Gemini questions like "what's the best Python web framework?" and tracks whether your project gets recommended, where it ranks, and how that changes over time. No AI agents involved -- just structured queries and analysis.
+
+</details>
+
 ---
 
 <div align="center">
