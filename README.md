@@ -220,7 +220,7 @@ GeoStorm itself is free. The only cost is the AI API usage through OpenRouter. A
 
 You could wire up an OpenClaw agent with a cron job to query AI models daily and store the results somewhere. But then you're building GeoStorm from scratch -- prompt engineering for consistent structured responses, parsing and normalizing across models, calculating recommendation share and position rankings, detecting changes over time, generating alerts, and building a UI to make sense of it all.
 
-GeoStorm does all of that out of the box. One container, no agent framework required.
+GeoStorm does all of that out of the box. It's also cheaper and more predictable -- GeoStorm runs deterministic code on a fixed schedule, so you know exactly what queries run and what they cost. An AI agent deciding what to do each run can drift, retry unpredictably, or burn tokens on reasoning overhead. One container, no agent framework required.
 
 </details>
 
