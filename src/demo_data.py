@@ -50,7 +50,7 @@ _SCHEDULE_ID = str(uuid.uuid5(_NS, "schedule-demo"))
 _PROVIDERS = [
     ("openrouter", "anthropic/claude-3.5-sonnet"),
     ("openrouter", "openai/gpt-4o"),
-    ("openrouter", "google/gemini-1.5-pro"),
+    ("openrouter", "google/gemini-2.0-flash"),
 ]
 _PROVIDER_IDS = {
     f"{p[0]}/{p[1]}": str(uuid.uuid5(_NS, f"provider-{p[0]}-{p[1]}"))

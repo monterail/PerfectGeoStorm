@@ -9,18 +9,34 @@ import { apiFetch } from "@/lib/api"
 import type { ProjectDetail } from "@/schemas/project"
 
 function DemoBanner() {
+	const { data: setupStatus } = useQuery({
+		queryKey: ["setup-status"],
+		queryFn: () => apiFetch<{ has_api_key: boolean; has_projects: boolean }>("/setup/status"),
+	})
+
+	const hasApiKey = setupStatus?.has_api_key ?? false
+
 	return (
 		<div className="border-b bg-blue-50 px-4 py-3 dark:bg-blue-950/50">
 			<div className="flex items-center gap-3">
 				<div className="flex-1">
 					<p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-						You're viewing a read-only demo project.
-						<a
-							href="/settings"
-							className="ml-1 underline underline-offset-4 hover:text-blue-700 dark:hover:text-blue-300"
-						>
-							Add your OpenRouter API key
-						</a>{" "}
+						You're viewing a read-only demo project.{" "}
+						{hasApiKey ? (
+							<a
+								href="/projects"
+								className="ml-1 underline underline-offset-4 hover:text-blue-700 dark:hover:text-blue-300"
+							>
+								Go to your projects
+							</a>
+						) : (
+							<a
+								href="/settings"
+								className="ml-1 underline underline-offset-4 hover:text-blue-700 dark:hover:text-blue-300"
+							>
+								Add your OpenRouter API key
+							</a>
+						)}{" "}
 						to start monitoring your own software.
 					</p>
 				</div>

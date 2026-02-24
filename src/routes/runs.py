@@ -236,10 +236,10 @@ async def get_perception(
     params: list[object] = [project_id]
     if start_date:
         clauses.append("period_start >= ?")
-        params.append(start_date)
+        params.append(f"{start_date}T00:00:00Z")
     if end_date:
         clauses.append("period_end <= ?")
-        params.append(end_date)
+        params.append(f"{end_date}T23:59:59.999999Z")
 
     where = " AND ".join(clauses)
 
@@ -287,10 +287,10 @@ async def get_trajectory(
     params: list[object] = [project_id, period]
     if start_date:
         clauses.append("period_start >= ?")
-        params.append(start_date)
+        params.append(f"{start_date}T00:00:00Z")
     if end_date:
         clauses.append("period_end <= ?")
-        params.append(end_date)
+        params.append(f"{end_date}T23:59:59.999999Z")
 
     where = " AND ".join(clauses)
 
