@@ -58,7 +58,7 @@ Open [http://localhost:8080](http://localhost:8080) -- the demo loads immediatel
 <summary><h3>Requirements</h3></summary>
 
 - [Docker](https://docs.docker.com/get-docker/)
-- That's it. Everything else runs inside the container.
+- An [OpenRouter](https://openrouter.ai/) API key (for querying AI models)
 
 </details>
 
@@ -84,7 +84,9 @@ To start monitoring your own software:
 
 **1. Get an API key** at [OpenRouter](https://openrouter.ai/) -- one key gives you access to multiple AI models.
 
-**2. Add your key** in the GeoStorm UI settings page.
+**2. Add your OpenRouter API key in the GeoStorm settings page:**
+
+<img src="docs/images/settings-api-key.png" alt="GeoStorm Settings — API Key" width="700">
 
 **3. Create a project** in the UI and GeoStorm starts monitoring on a schedule.
 
