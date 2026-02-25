@@ -105,7 +105,8 @@ Given a company name, URL, GitHub repo, or package name, return a JSON object wi
 - brand_aliases: list of common alternative names, abbreviations, or misspellings
 - description: a one-sentence description of what this brand/product does
 - competitors: list of 3-5 direct competitor names
-- monitoring_terms: list of 5-8 natural-language queries someone might ask an AI assistant when looking for this type of product/service
+- monitoring_terms: list of 5-8 natural-language queries someone might ask an AI \
+assistant when looking for this type of product/service
 
 Return ONLY valid JSON, no markdown fences, no explanation.\
 """
@@ -138,7 +139,7 @@ async def autofill_project(req: AutofillRequest) -> AutofillResponse:
     if text.startswith("```"):
         lines = text.split("\n")
         # Remove first line (```json or ```) and last line (```)
-        lines = [l for l in lines[1:] if l.strip() != "```"]
+        lines = [line for line in lines[1:] if line.strip() != "```"]
         text = "\n".join(lines)
 
     try:
