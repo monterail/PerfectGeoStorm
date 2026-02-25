@@ -629,7 +629,7 @@ async def _seed_alerts(
             "model_divergence",
             "warning",
             "Models disagree on FastAPI ranking",
-            "Claude 3.5 Sonnet consistently ranks FastAPI #1, while GPT-4o lists Django first "
+            "Claude 3.5 Sonnet consistently ranks FastAPI #1, while GPT-5.2 lists Django first "
             "for 'best Python async framework'. Gemini 1.5 Pro alternates between the two.",
             "Different training data and recency of knowledge leads to divergent recommendations.",
             True,
@@ -688,10 +688,10 @@ async def _seed_alerts(
             3,
             "model_divergence",
             "warning",
-            "GPT-4o no longer recommends FastAPI first",
-            "GPT-4o now lists Django as the #1 recommendation for 2 of 3 monitored terms. "
+            "GPT-5.2 no longer recommends FastAPI first",
+            "GPT-5.2 now lists Django as the #1 recommendation for 2 of 3 monitored terms. "
             "Claude 3.5 Sonnet still favors FastAPI. Divergence score: 34%.",
-            "GPT-4o's training data appears to weight Django's recent async improvements more heavily.",
+            "GPT-5.2's training data appears to weight Django's recent async improvements more heavily.",
             False,
         ),
         (
@@ -699,7 +699,7 @@ async def _seed_alerts(
             "competitor_emergence",
             "critical",
             "Django now leads in 2 of 3 monitored terms",
-            "Django is now the top recommendation in GPT-4o and Gemini for 'best Python async framework' "
+            "Django is now the top recommendation in GPT-5.2 and Gemini for 'best Python async framework' "
             "and 'Python ASGI server production'. FastAPI leads only in 'fastest Python web framework'.",
             "Django's momentum in async support is shifting AI perception significantly.",
             False,

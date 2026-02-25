@@ -4,7 +4,7 @@
 
 ### AI Perception Monitoring for Software
 
-**Monitor how AI systems perceive and recommend your software across ChatGPT, Claude, Gemini, and more.**
+**Monitor how AI systems perceive and recommend your software across GPT, Claude, Gemini, and more.**
 
 <p align="center">
   <a href="https://github.com/geostorm-ai/geostorm">
@@ -32,7 +32,7 @@
 <tr>
 <td>
 
-**Developers increasingly discover software through AI** -- ChatGPT, Claude, Gemini, Perplexity, and others. When someone asks "what's the best library for X?", the AI's answer shapes adoption. But you have no idea what these models are saying about your project.
+**Developers increasingly discover software through AI** -- GPT, Claude, Gemini, Perplexity, and others. When someone asks "what's the best library for X?", the AI's answer shapes adoption. But you have no idea what these models are saying about your project.
 
 **GeoStorm fixes this.** It monitors multiple AI models on a schedule, tracks how they perceive and recommend your software, and alerts you when things change -- a new competitor appears, your ranking drops, or a model stops mentioning you entirely.
 
@@ -125,7 +125,7 @@ The entire stack is self-contained. One container, one port, one volume mount.
 
 ## Configuration
 
-GeoStorm works out of the box with zero configuration. For production use, you can optionally configure notification channels via environment variables in a `.env` file:
+GeoStorm works out of the box with zero configuration. You can optionally configure notification channels via environment variables in a `.env` file:
 
 | Channel | Description |
 |---------|-------------|
@@ -181,7 +181,7 @@ More and more developers discover tools by asking AI -- "what's the best library
 <summary><strong>Why OpenRouter?</strong></summary>
 <br>
 
-OpenRouter gives you access to GPT-4o, Claude, Gemini, Llama, and dozens of other models through a single API key. Instead of managing separate keys for OpenAI, Anthropic, and Google, you sign up once and GeoStorm can query all of them. You can also use direct provider keys (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`) if you prefer.
+OpenRouter gives you access to GPT, Claude, Gemini, Llama, and dozens of other models through a single API key. Instead of managing separate keys for OpenAI, Anthropic, and Google, you sign up once and GeoStorm can query all of them. You can also use direct provider keys (`OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `GOOGLE_API_KEY`) if you prefer.
 
 </details>
 

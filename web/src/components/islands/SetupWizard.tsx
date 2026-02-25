@@ -480,7 +480,7 @@ export function SetupWizard() {
 							<div className="space-y-3">
 								<Label>Monitoring Terms</Label>
 								<p className="text-xs text-muted-foreground">
-									What would someone ask ChatGPT or Claude when looking for a tool like yours?
+									What would someone ask GPT or Claude when looking for a tool like yours?
 								</p>
 								<div className="flex gap-2">
 									<Input
