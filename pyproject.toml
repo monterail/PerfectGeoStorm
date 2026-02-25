@@ -13,7 +13,8 @@ dependencies = [
     "apscheduler>=4.0.0a1",
     "httpx>=0.27,<1",
     "aiosmtplib",
-    "pydantic-ai",
+    "pydantic-ai>=1.0",
+    "genai-prices",
     "pydantic-settings>=2.13.1",
     "logfire[fastapi,httpx]",
 ]
