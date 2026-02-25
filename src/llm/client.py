@@ -38,7 +38,7 @@ async def send_prompt(request: PromptRequest, provider_type: ProviderType) -> Pr
     price = calc_price(
         Usage(input_tokens=input_tokens, output_tokens=output_tokens),
         model_ref=request.model_id,
-        provider_id="openrouter",
+        provider_id=provider_type.value,
     )
     if price:
         cost_usd = float(price.total_price)

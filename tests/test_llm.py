@@ -7,7 +7,6 @@ import pytest
 from src.llm.base import (
     LLMError,
     PromptRequest,
-    PromptResponse,
     ProviderType,
 )
 from src.llm.factory import get_api_key
@@ -47,19 +46,6 @@ class TestPromptService:
 # ---------------------------------------------------------------------------
 # send_prompt / send_structured_prompt tests
 # ---------------------------------------------------------------------------
-
-
-def _ok_response() -> PromptResponse:
-    return PromptResponse(
-        text="test response",
-        model_id="test-model",
-        provider=ProviderType.OPENROUTER,
-        prompt_tokens=10,
-        completion_tokens=20,
-        total_tokens=30,
-        latency_ms=100,
-        cost_usd=0.001,
-    )
 
 
 def _mock_run_result(text: str = "test response", input_tokens: int = 10, output_tokens: int = 20) -> MagicMock:
