@@ -73,7 +73,7 @@ async def create_project(req: CreateProjectRequest) -> ProjectCreatedResponse:
             (
                 brand_id,
                 project_id,
-                req.brand_name,
+                req.brand_name or req.name,
                 json.dumps(req.brand_aliases),
                 req.brand_description,
                 req.brand_website,

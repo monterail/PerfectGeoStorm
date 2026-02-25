@@ -43,7 +43,7 @@ class CreateProjectRequest(BaseModel):
 
     name: str = Field(..., min_length=1, max_length=255)
     description: str | None = None
-    brand_name: str = Field(..., min_length=1, max_length=255)
+    brand_name: str | None = Field(default=None, max_length=255)
     brand_aliases: list[str] = Field(default_factory=list)
     brand_description: str | None = None
     brand_website: str | None = None
@@ -410,6 +410,22 @@ class ApiKeyStatusResponse(BaseModel):
 
     configured: bool = False
     source: str | None = None
+
+
+class AutofillRequest(BaseModel):
+    """Request to autofill project details via AI."""
+
+    input: str = Field(..., min_length=1)
+
+
+class AutofillResponse(BaseModel):
+    """AI-generated project details."""
+
+    brand_name: str
+    brand_aliases: list[str] = Field(default_factory=list)
+    description: str
+    competitors: list[str] = Field(default_factory=list)
+    monitoring_terms: list[str] = Field(default_factory=list)
 
 
 class StoreApiKeyRequest(BaseModel):
