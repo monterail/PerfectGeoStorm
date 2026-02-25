@@ -89,7 +89,7 @@ export function ProvidersManager({ projectId, isDemo }: ProvidersManagerProps) {
 							</Select>
 						</div>
 						<Input
-							placeholder="Model name (e.g. openai/gpt-4o)"
+							placeholder="Model name (e.g. openai/gpt-5.2)"
 							value={modelName}
 							onChange={(e) => setModelName(e.target.value)}
 							disabled={isDemo || createProvider.isPending}
