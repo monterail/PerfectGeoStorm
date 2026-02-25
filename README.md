@@ -84,7 +84,7 @@ To start monitoring your own software:
 
 **1. Get an API key** at [OpenRouter](https://openrouter.ai/) -- one key gives you access to multiple AI models.
 
-**2. Add your key** in Settings:
+**2. Add your OpenRouter API key:**
 
 <img src="docs/images/settings-api-key.png" alt="GeoStorm Settings — API Key" width="700">
 
