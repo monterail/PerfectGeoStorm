@@ -245,9 +245,17 @@ async def trigger_monitoring(project_id: str) -> dict[str, str]:
 
         if run_ids:
             placeholders = ",".join("?" for _ in run_ids)
-            await db.execute(f"DELETE FROM mentions WHERE response_id IN (SELECT id FROM responses WHERE run_id IN ({placeholders}))", run_ids)
-            await db.execute(f"DELETE FROM responses WHERE run_id IN ({placeholders})", run_ids)
-            await db.execute(f"DELETE FROM runs WHERE id IN ({placeholders})", run_ids)
+            await db.execute(
+                "DELETE FROM mentions WHERE response_id IN "
+                f"(SELECT id FROM responses WHERE run_id IN ({placeholders}))",
+                run_ids,
+            )
+            await db.execute(
+                f"DELETE FROM responses WHERE run_id IN ({placeholders})", run_ids,
+            )
+            await db.execute(
+                f"DELETE FROM runs WHERE id IN ({placeholders})", run_ids,
+            )
 
         await db.execute("DELETE FROM perception_scores WHERE project_id = ?", (project_id,))
         await db.execute("DELETE FROM alerts WHERE project_id = ?", (project_id,))
