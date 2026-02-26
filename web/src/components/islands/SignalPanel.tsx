@@ -1,3 +1,5 @@
+import { useEffect } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import { EmptyState } from "@/components/EmptyState"
 import { ScoreDisplay } from "@/components/ScoreDisplay"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -45,6 +47,18 @@ export function SignalPanel({ projectId }: SignalPanelProps) {
 		isLoading: perceptionLoading,
 		error: perceptionError,
 	} = usePerception(projectId, { enablePolling: hasRunningRuns })
+
+	// When a run just finished but perception data hasn't arrived yet,
+	// the cached empty response leaves the panel showing "--".
+	// Invalidate perception so it refetches with the new scores.
+	const completedRunCount = runsData?.items.filter((r) => r.status === "completed").length ?? 0
+	const hasMissingScores = completedRunCount > 0 && (!perception?.data || perception.data.length === 0)
+	const queryClient = useQueryClient()
+	useEffect(() => {
+		if (hasMissingScores) {
+			queryClient.invalidateQueries({ queryKey: ["perception", projectId] })
+		}
+	}, [hasMissingScores, projectId, queryClient])
 
 	const isLoading = perceptionLoading || runsLoading
 	const error = perceptionError || runsError
