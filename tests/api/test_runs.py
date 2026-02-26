@@ -105,14 +105,20 @@ async def _seed_perception_breakdown(db_path, project_id="proj-1"):
             "INSERT INTO perception_scores (id, project_id, term_id, provider_name, recommendation_share,"
             " position_avg, overall_score, trend_direction, period_type, period_start, period_end, created_at)"
             " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            ("ps-term-1", project_id, "term-1", None, 0.6, 2.0, 70.0, "stable", "daily", "2024-01-01", "2024-01-01", now),
+            (
+                "ps-term-1", project_id, "term-1", None, 0.6, 2.0,
+                70.0, "stable", "daily", "2024-01-01", "2024-01-01", now,
+            ),
         )
         # Per-provider score (term_id NULL, provider_name set)
         await db.execute(
             "INSERT INTO perception_scores (id, project_id, term_id, provider_name, recommendation_share,"
             " position_avg, overall_score, trend_direction, period_type, period_start, period_end, created_at)"
             " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            ("ps-prov-1", project_id, None, "openrouter", 0.4, 3.0, 60.0, "stable", "daily", "2024-01-01", "2024-01-01", now),
+            (
+                "ps-prov-1", project_id, None, "openrouter", 0.4, 3.0,
+                60.0, "stable", "daily", "2024-01-01", "2024-01-01", now,
+            ),
         )
         await db.commit()
     finally:
