@@ -22,10 +22,15 @@ logger = logging.getLogger(__name__)
 _VALIDATION_MODEL = "google/gemini-2.5-flash-lite"
 
 
+_AUTH_ERROR_MSG = (
+    "Invalid API key. Please check that you're using a valid OpenRouter API key (starts with sk-or-)."
+)
+
+
 class InvalidApiKeyError(Exception):
     """Raised when an API key fails validation against OpenRouter."""
 
-    def __init__(self, message: str) -> None:
+    def __init__(self, message: str = _AUTH_ERROR_MSG) -> None:
         self.message = message
         super().__init__(message)
 
@@ -45,11 +50,9 @@ async def validate_openrouter_key(api_key: str) -> None:
         err = str(exc)
         if "401" in err or "auth" in err.lower() or "Missing Authentication" in err:
             logger.warning("OpenRouter API key validation failed: %s", err)
-            raise InvalidApiKeyError(
-                "Invalid API key. Please check that you're using a valid OpenRouter API key (starts with sk-or-)."
-            ) from exc
+            raise InvalidApiKeyError from exc
         logger.warning("OpenRouter API key validation error: %s", err)
-        raise InvalidApiKeyError(f"Could not validate API key: {err}") from exc
+        raise InvalidApiKeyError(f"Could not validate API key: {err}") from exc  # noqa: TRY003
 
 
 class SettingsService:
