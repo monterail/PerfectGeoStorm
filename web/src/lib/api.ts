@@ -37,7 +37,11 @@ export async function apiFetch<T>(
 		} catch {
 			body = await response.text()
 		}
-		throw new ApiError(response.status, `API error: ${response.status}`, body)
+		const detail =
+			body && typeof body === "object" && "detail" in body && typeof (body as Record<string, unknown>).detail === "string"
+				? (body as Record<string, string>).detail
+				: `API error: ${response.status}`
+		throw new ApiError(response.status, detail, body)
 	}
 	if (response.status === 204) {
 		return undefined as T
