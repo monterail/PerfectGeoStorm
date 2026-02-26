@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 import time
+from http import HTTPStatus
 from typing import TypeVar
 
 from genai_prices import Usage, calc_price
@@ -19,37 +20,37 @@ T = TypeVar("T", bound=BaseModel)
 _STATUS_CODE_RE = re.compile(r"status_code:\s*(\d{3})")
 
 _ERROR_MAP: dict[int, tuple[str, bool]] = {
-    401: (
+    HTTPStatus.UNAUTHORIZED: (
         "Authentication failed. Your OpenRouter API key is invalid or has been disabled. "
         "Go to Settings to enter a valid key (starts with sk-or-).",
         False,
     ),
-    402: (
+    HTTPStatus.PAYMENT_REQUIRED: (
         "Insufficient credits. Your OpenRouter account has no remaining funds. "
         "Add credits at openrouter.ai/credits and try again.",
         False,
     ),
-    403: (
+    HTTPStatus.FORBIDDEN: (
         "Request blocked. The AI model flagged this request as requiring moderation. "
         "Try rephrasing your monitoring terms.",
         False,
     ),
-    408: (
+    HTTPStatus.REQUEST_TIMEOUT: (
         "Request timed out. The AI model took too long to respond. "
         "This is usually temporary — try again in a few minutes.",
         True,
     ),
-    429: (
+    HTTPStatus.TOO_MANY_REQUESTS: (
         "Rate limited. Too many requests to OpenRouter. "
         "Wait a few minutes and try again, or check your rate limits at openrouter.ai.",
         True,
     ),
-    502: (
+    HTTPStatus.BAD_GATEWAY: (
         "Model unavailable. The selected AI model is temporarily down. "
         "This is usually temporary — try again shortly.",
         True,
     ),
-    503: (
+    HTTPStatus.SERVICE_UNAVAILABLE: (
         "No model provider available. No provider can currently serve this model. "
         "Try again later or switch to a different model.",
         True,
