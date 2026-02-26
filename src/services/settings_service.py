@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 # Cheap model on OpenRouter for key validation
-_VALIDATION_MODEL = "google/gemini-2.0-flash-lite-001"
+_VALIDATION_MODEL = "google/gemini-2.5-flash-lite"
 
 
 class InvalidApiKeyError(Exception):
