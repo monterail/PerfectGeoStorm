@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 _posthog_client: Any = None
 _server_id: str | None = None
 
-_POSTHOG_API_KEY = "phc_1MOlbfPkjOsIOj9UVWqxrMusGJooMq3LFvuIbCnYEer"
+_POSTHOG_API_KEY = "phc_LX4wF7msg0Hej7qjsfLCiWPZuD8rzXpbUCS0VhGtjWT"
 _POSTHOG_HOST = "https://us.i.posthog.com"
 
 
