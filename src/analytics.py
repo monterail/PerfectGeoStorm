@@ -12,16 +12,19 @@ logger = logging.getLogger(__name__)
 _posthog_client: Any = None
 _server_id: str | None = None
 
-_POSTHOG_API_KEY = "phc_LX4wF7msg0Hej7qjsfLCiWPZuD8rzXpbUCS0VhGtjWT"
-_POSTHOG_HOST = "https://eu.i.posthog.com"
-
 
 def init_analytics(server_id: str) -> None:
     """Initialize the PostHog client with maximum privacy settings."""
     global _posthog_client, _server_id  # noqa: PLW0603
 
-    if get_settings().no_telemetry:
+    settings = get_settings()
+
+    if settings.no_telemetry:
         logger.info("Telemetry disabled via NO_TELEMETRY")
+        return
+
+    if not settings.posthog_project_api_key:
+        logger.debug("No POSTHOG_PROJECT_API_KEY configured, analytics disabled")
         return
 
     try:
@@ -32,8 +35,8 @@ def init_analytics(server_id: str) -> None:
 
     try:
         client = Posthog(
-            project_api_key=_POSTHOG_API_KEY,
-            host=_POSTHOG_HOST,
+            project_api_key=settings.posthog_project_api_key,
+            host=settings.posthog_host,
             disable_geoip=True,
         )
     except Exception:  # noqa: BLE001
