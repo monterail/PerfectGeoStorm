@@ -6,6 +6,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 import aiosqlite
+import pytest
+from fastmcp.exceptions import ToolError
 
 from src.mcp_server import mcp
 
@@ -153,24 +155,22 @@ async def test_get_project_summary_not_found(tmp_path):
     db_path = str(tmp_path / "test.db")
     await _init_db(db_path)
 
-    with patch("src.database.get_db_connection", side_effect=_fake_db_conn(db_path)):
-        result = await mcp.call_tool("get_project_summary", {"project": "nonexistent-xyz"})
-
-    data = _unwrap(result.structured_content)
-    assert "error" in data
-    assert "available" in data
-    assert "Test Project" in data["available"]
+    with (
+        patch("src.database.get_db_connection", side_effect=_fake_db_conn(db_path)),
+        pytest.raises(ToolError, match="not found"),
+    ):
+        await mcp.call_tool("get_project_summary", {"project": "nonexistent-xyz"})
 
 
 async def test_get_run_detail_not_found(tmp_path):
     db_path = str(tmp_path / "test.db")
     await _init_db(db_path)
 
-    with patch("src.database.get_db_connection", side_effect=_fake_db_conn(db_path)):
-        result = await mcp.call_tool("get_run_detail", {"run_id": "nonexistent"})
-
-    data = _unwrap(result.structured_content)
-    assert "error" in data
+    with (
+        patch("src.database.get_db_connection", side_effect=_fake_db_conn(db_path)),
+        pytest.raises(ToolError, match="not found"),
+    ):
+        await mcp.call_tool("get_run_detail", {"run_id": "nonexistent"})
 
 
 async def test_get_trajectory(tmp_path):

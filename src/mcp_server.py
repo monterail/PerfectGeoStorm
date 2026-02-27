@@ -6,7 +6,6 @@ import difflib
 from typing import TYPE_CHECKING
 
 from fastmcp import FastMCP
-from pydantic import BaseModel, Field
 
 from src.container import (
     alert_service,
@@ -29,11 +28,19 @@ if TYPE_CHECKING:
 _FUZZY_MATCH_THRESHOLD = 0.6
 
 
-class MCPError(BaseModel):
-    """Typed error response returned by MCP tools."""
+class ProjectNotFoundError(Exception):
+    """Raised when a project cannot be resolved by ID or name."""
 
-    error: str
-    available: list[str] = Field(default_factory=list)
+    def __init__(self, project: str, available: list[str]) -> None:
+        names = ", ".join(available) or "none"
+        super().__init__(f"Project '{project}' not found. Available projects: {names}")
+
+
+class RunNotFoundError(Exception):
+    """Raised when a run ID does not exist."""
+
+    def __init__(self, run_id: str) -> None:
+        super().__init__(f"Run '{run_id}' not found")
 
 
 mcp = FastMCP(
@@ -45,10 +52,10 @@ mcp = FastMCP(
 )
 
 
-async def _resolve_project(project: str) -> tuple[str, aiosqlite.Row] | MCPError:
+async def _resolve_project(project: str) -> tuple[str, aiosqlite.Row]:
     """Resolve a project ID or fuzzy name to (project_id, row).
 
-    Returns a (project_id, row) tuple on success, or an MCPError on failure.
+    Raises ProjectNotFoundError if no match is found.
     """
     # 1. Exact ID match
     row = await project_repo.get_project(project)
@@ -88,7 +95,7 @@ async def _resolve_project(project: str) -> tuple[str, aiosqlite.Row] | MCPError
         if matched_row:
             return (best_pid, matched_row)
 
-    return MCPError(error=f"Project '{project}' not found", available=list(names.values()))
+    raise ProjectNotFoundError(project, list(names.values()))
 
 
 @mcp.tool()
@@ -101,17 +108,14 @@ async def list_projects() -> list[ProjectResponse]:
 
 
 @mcp.tool()
-async def get_project_summary(project: str) -> ProjectSummary | MCPError:
+async def get_project_summary(project: str) -> ProjectSummary:
     """Get a full summary for a project: detail, perception scores, breakdown, recent runs, and alerts.
 
     Args:
         project: Project ID or name (fuzzy matching supported).
     """
-    resolved = await _resolve_project(project)
-    if isinstance(resolved, MCPError):
-        return resolved
+    project_id, row = await _resolve_project(project)
 
-    project_id, row = resolved
     detail = await project_service.get_project_detail(project_id, row)
     perception = await run_service.get_perception(project_id, None, None)
     term_rows = await term_repo.list_active_term_ids_and_names(project_id)
@@ -131,7 +135,7 @@ async def get_project_summary(project: str) -> ProjectSummary | MCPError:
 
 
 @mcp.tool()
-async def get_run_detail(run_id: str) -> RunDetailResponse | MCPError:
+async def get_run_detail(run_id: str) -> RunDetailResponse:
     """Get details for a single monitoring run, including perception score and competitors detected.
 
     Args:
@@ -139,7 +143,7 @@ async def get_run_detail(run_id: str) -> RunDetailResponse | MCPError:
     """
     result = await run_service.get_run_detail(run_id)
     if not result:
-        return MCPError(error=f"Run '{run_id}' not found")
+        raise RunNotFoundError(run_id)
     return result
 
 
@@ -149,7 +153,7 @@ async def get_trajectory(
     start_date: str | None = None,
     end_date: str | None = None,
     period: str = "day",
-) -> TrajectoryResponse | MCPError:
+) -> TrajectoryResponse:
     """Get historical trajectory data showing recommendation share, position, and competitor delta over time.
 
     Args:
@@ -158,9 +162,5 @@ async def get_trajectory(
         end_date: Optional end date filter (YYYY-MM-DD).
         period: Aggregation period — 'day', 'week', or 'month' (default 'day').
     """
-    resolved = await _resolve_project(project)
-    if isinstance(resolved, MCPError):
-        return resolved
-
-    project_id, _ = resolved
+    project_id, _ = await _resolve_project(project)
     return await run_service.get_trajectory(project_id, start_date, end_date, period)
