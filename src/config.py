@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     smtp_password: str | None = None
     smtp_from: str | None = None
 
+    # Telemetry
+    no_telemetry: bool = False
+
     # Application
     secret_key: str = "dev-secret-key-change-in-production"
     database_url: str = "./data/geo-storm.db"
