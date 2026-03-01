@@ -25,20 +25,20 @@ from src.services.settings_service import InvalidApiKeyError
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api")
+router = APIRouter(prefix="/api", tags=["Setup"])
 
 
-@router.get("/setup/status")
+@router.get("/setup/status", operation_id="getSetupStatus")
 async def get_setup_status() -> SetupStatusResponse:
     return await settings_service.get_setup_status()
 
 
-@router.get("/settings/api-key-status")
+@router.get("/settings/api-key-status", operation_id="getApiKeyStatus")
 async def get_api_key_status() -> ApiKeyStatusResponse:
     return await settings_service.get_api_key_status()
 
 
-@router.post("/settings/api-key")
+@router.post("/settings/api-key", operation_id="storeApiKey")
 async def store_api_key(req: StoreApiKeyRequest) -> dict[str, Any]:
     now = datetime.now(tz=UTC).isoformat()
     try:
@@ -48,13 +48,13 @@ async def store_api_key(req: StoreApiKeyRequest) -> dict[str, Any]:
     return {"status": "stored"}
 
 
-@router.delete("/settings/api-key")
+@router.delete("/settings/api-key", operation_id="deleteApiKey")
 async def delete_api_key() -> Response:
     await settings_service.delete_api_key()
     return Response(status_code=204)
 
 
-@router.get("/settings/models")
+@router.get("/settings/models", operation_id="listRecommendedModels")
 async def get_recommended_models() -> list[dict[str, str]]:
     """Return the curated list of models available through OpenRouter."""
     return RECOMMENDED_MODELS
@@ -102,7 +102,7 @@ Include a mix of: category phrases ("open source BaaS"), comparison phrases \
 """
 
 
-@router.post("/setup/autofill")
+@router.post("/setup/autofill", operation_id="autofillProject")
 async def autofill_project(req: AutofillRequest) -> AutofillResponse:
     api_key = await get_api_key(ProviderType.OPENROUTER)
     if not api_key:
