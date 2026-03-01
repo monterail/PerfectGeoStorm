@@ -24,7 +24,7 @@ def test_all_operations_have_camel_case_id_and_tags() -> None:
                 errors.append(f"{method.upper()} {path}: missing operationId")
             elif not _is_camel_case(op_id):
                 errors.append(
-                    f"{method.upper()} {path}: operationId '{op_id}' is not camelCase"
+                    f"{method.upper()} {path}: operationId '{op_id}' is not camelCase",
                 )
 
             if not tags:

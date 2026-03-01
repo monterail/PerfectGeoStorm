@@ -1193,7 +1193,7 @@
     "/api/projects/{project_id}/perception": {
       "get": {
         "tags": [
-          "Runs"
+          "Perception"
         ],
         "summary": "Get Perception",
         "description": "Time-series perception data for a project.",
@@ -1268,7 +1268,7 @@
     "/api/projects/{project_id}/trajectory": {
       "get": {
         "tags": [
-          "Runs"
+          "Perception"
         ],
         "summary": "Get Trajectory",
         "description": "Historical trajectory data showing week-over-week or day-over-day changes.",
@@ -1358,7 +1358,7 @@
     "/api/projects/{project_id}/perception/breakdown": {
       "get": {
         "tags": [
-          "Runs"
+          "Perception"
         ],
         "summary": "Get Perception Breakdown",
         "description": "Per-term and per-provider perception breakdown from the latest scoring period.",
@@ -1422,7 +1422,7 @@
     "/api/settings/api-key-status": {
       "get": {
         "tags": [
-          "Setup"
+          "Settings"
         ],
         "summary": "Get Api Key Status",
         "operationId": "getApiKeyStatus",
@@ -1443,7 +1443,7 @@
     "/api/settings/api-key": {
       "post": {
         "tags": [
-          "Setup"
+          "Settings"
         ],
         "summary": "Store Api Key",
         "operationId": "storeApiKey",
@@ -1484,7 +1484,7 @@
       },
       "delete": {
         "tags": [
-          "Setup"
+          "Settings"
         ],
         "summary": "Delete Api Key",
         "operationId": "deleteApiKey",
@@ -1503,7 +1503,7 @@
     "/api/settings/models": {
       "get": {
         "tags": [
-          "Setup"
+          "Settings"
         ],
         "summary": "Get Recommended Models",
         "description": "Return the curated list of models available through OpenRouter.",
