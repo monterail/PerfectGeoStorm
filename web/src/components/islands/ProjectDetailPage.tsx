@@ -3,6 +3,7 @@ import { useState } from "react"
 import { AlertsFeed } from "./AlertsFeed"
 import { MonitorButton } from "./MonitorButton"
 import { PerceptionChart } from "./PerceptionChart"
+import { ProjectHeatmap } from "./ProjectHeatmap"
 import { ProjectTabs } from "./ProjectTabs"
 import { RecentRuns } from "./RecentRuns"
 import { SignalPanel } from "./SignalPanel"
@@ -149,6 +150,7 @@ function ProjectDetailPageInner() {
 				</div>
 				<AlertsFeed projectId={id} runCount={runCount} />
 				<VisibilityBreakdown projectId={id} />
+				<ProjectHeatmap projectId={id} />
 				<div className="mt-6">
 					<ProjectTabs projectId={id} isDemo={project.is_demo} />
 				</div>

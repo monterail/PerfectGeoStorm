@@ -272,6 +272,55 @@ class ResponseItem(BaseModel):
 
 
 # ============================================================================
+# Run Breakdown / Heatmap
+# ============================================================================
+
+
+class RunTermBreakdownItem(BaseModel):
+    """Per-term brand mention summary for a single run."""
+
+    term_id: str
+    term_name: str
+    total_responses: int
+    brand_mentions: int
+    mention_pct: float
+
+
+class RunBreakdownResponse(BaseModel):
+    """Full term breakdown for a run."""
+
+    run_id: str
+    provider: str | None
+    terms: list[RunTermBreakdownItem]
+
+
+class HeatmapCell(BaseModel):
+    """Single cell in the project heatmap (run × term)."""
+
+    term_id: str
+    term_name: str
+    mention_pct: float | None
+
+
+class HeatmapRow(BaseModel):
+    """One row in the project heatmap (one run)."""
+
+    run_id: str
+    run_date: datetime
+    cells: list[HeatmapCell]
+
+
+class ProjectHeatmapResponse(BaseModel):
+    """Project-level heatmap: rows = runs, columns = terms."""
+
+    project_id: str
+    provider: str | None
+    terms: list[str]
+    rows: list[HeatmapRow]
+    available_providers: list[str]
+
+
+# ============================================================================
 # Alert
 # ============================================================================
 

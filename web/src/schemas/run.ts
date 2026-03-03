@@ -63,3 +63,47 @@ export const ResponseSchema = z.object({
 })
 
 export type Response = z.infer<typeof ResponseSchema>
+
+export const RunTermBreakdownItemSchema = z.object({
+	term_id: z.string(),
+	term_name: z.string(),
+	total_responses: z.number(),
+	brand_mentions: z.number(),
+	mention_pct: z.number(),
+})
+
+export type RunTermBreakdownItem = z.infer<typeof RunTermBreakdownItemSchema>
+
+export const RunBreakdownResponseSchema = z.object({
+	run_id: z.string(),
+	provider: z.string().nullable(),
+	terms: z.array(RunTermBreakdownItemSchema),
+})
+
+export type RunBreakdownResponse = z.infer<typeof RunBreakdownResponseSchema>
+
+export const HeatmapCellSchema = z.object({
+	term_id: z.string(),
+	term_name: z.string(),
+	mention_pct: z.number().nullable(),
+})
+
+export type HeatmapCell = z.infer<typeof HeatmapCellSchema>
+
+export const HeatmapRowSchema = z.object({
+	run_id: z.string(),
+	run_date: z.string(),
+	cells: z.array(HeatmapCellSchema),
+})
+
+export type HeatmapRow = z.infer<typeof HeatmapRowSchema>
+
+export const ProjectHeatmapResponseSchema = z.object({
+	project_id: z.string(),
+	provider: z.string().nullable(),
+	terms: z.array(z.string()),
+	rows: z.array(HeatmapRowSchema),
+	available_providers: z.array(z.string()),
+})
+
+export type ProjectHeatmapResponse = z.infer<typeof ProjectHeatmapResponseSchema>

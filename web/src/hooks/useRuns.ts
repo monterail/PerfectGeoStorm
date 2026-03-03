@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
+import { fetchProjectHeatmap, fetchRunBreakdown } from "@/lib/api"
 import { apiFetch } from "@/lib/api"
-import type { Response, Run, RunDetail } from "@/schemas/run"
+import type { ProjectHeatmapResponse, Response, Run, RunBreakdownResponse, RunDetail } from "@/schemas/run"
 import type { PaginatedResponse } from "@/schemas/shared"
 
 export function useRuns(
@@ -54,5 +55,21 @@ export function useRunResponses(
 				`/runs/${runId}/responses${qs ? `?${qs}` : ""}`,
 			),
 		enabled: !!runId,
+	})
+}
+
+export function useRunBreakdown(runId: string | null, provider?: string) {
+	return useQuery<RunBreakdownResponse>({
+		queryKey: ["runs", runId, "breakdown", provider],
+		queryFn: () => fetchRunBreakdown(runId!, provider),
+		enabled: !!runId,
+	})
+}
+
+export function useProjectHeatmap(projectId: string, provider?: string) {
+	return useQuery<ProjectHeatmapResponse>({
+		queryKey: ["heatmap", projectId, provider],
+		queryFn: () => fetchProjectHeatmap(projectId, provider),
+		enabled: !!projectId,
 	})
 }

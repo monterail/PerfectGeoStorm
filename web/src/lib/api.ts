@@ -1,3 +1,5 @@
+import type { RunBreakdownResponse, ProjectHeatmapResponse } from "@/schemas/run"
+
 function getApiBase(): string {
 	if (import.meta.env.PUBLIC_API_URL) {
 		return import.meta.env.PUBLIC_API_URL
@@ -47,4 +49,20 @@ export async function apiFetch<T>(
 		return undefined as T
 	}
 	return response.json() as Promise<T>
+}
+
+export function fetchRunBreakdown(
+	runId: string,
+	provider?: string,
+): Promise<RunBreakdownResponse> {
+	const qs = provider ? `?provider=${encodeURIComponent(provider)}` : ""
+	return apiFetch<RunBreakdownResponse>(`/runs/${runId}/breakdown${qs}`)
+}
+
+export function fetchProjectHeatmap(
+	projectId: string,
+	provider?: string,
+): Promise<ProjectHeatmapResponse> {
+	const qs = provider ? `?provider=${encodeURIComponent(provider)}` : ""
+	return apiFetch<ProjectHeatmapResponse>(`/projects/${projectId}/heatmap${qs}`)
 }

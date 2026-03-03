@@ -1,6 +1,7 @@
 import { Play } from "lucide-react"
 import { Fragment, useState } from "react"
 import { ResponseViewer } from "@/components/islands/ResponseViewer"
+import { RunBreakdown } from "@/components/islands/RunBreakdown"
 import { RunProgressPipeline } from "@/components/RunProgressPipeline"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -13,6 +14,7 @@ import {
 	SheetTitle,
 } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTriggerMonitoring } from "@/hooks/useProjects"
 import { useRuns } from "@/hooks/useRuns"
 import { useApiKeyStatus } from "@/hooks/useSettings"
@@ -175,13 +177,26 @@ export function RunsTable({ projectId, isDemo }: RunsTableProps) {
 			<Sheet open={!!selectedRunId} onOpenChange={(open) => !open && setSelectedRunId(null)}>
 				<SheetContent side="right" className="w-full sm:max-w-3xl overflow-y-auto">
 					<SheetHeader>
-						<SheetTitle>Run Responses</SheetTitle>
+						<SheetTitle>Run Detail</SheetTitle>
 						<SheetDescription>
-							LLM responses from this monitoring run
+							Summary and LLM responses from this monitoring run
 						</SheetDescription>
 					</SheetHeader>
 					<div className="mt-4">
-						{selectedRunId && <ResponseViewer runId={selectedRunId} />}
+						{selectedRunId && (
+							<Tabs defaultValue="summary">
+								<TabsList className="mb-4">
+									<TabsTrigger value="summary">Summary</TabsTrigger>
+									<TabsTrigger value="responses">Responses</TabsTrigger>
+								</TabsList>
+								<TabsContent value="summary">
+									<RunBreakdown runId={selectedRunId} />
+								</TabsContent>
+								<TabsContent value="responses">
+									<ResponseViewer runId={selectedRunId} />
+								</TabsContent>
+							</Tabs>
+						)}
 					</div>
 				</SheetContent>
 			</Sheet>

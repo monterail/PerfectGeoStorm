@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+from datetime import datetime
 from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
@@ -17,12 +18,17 @@ from src.container import run_repo, run_service, term_repo
 from src.progress import RunPhase, RunProgressEvent, progress_bus
 from src.routes.deps import get_project_or_404
 from src.schemas import (  # noqa: TC001
+    HeatmapCell,
+    HeatmapRow,
     PaginatedResponse,
     PerceptionBreakdownResponse,
     PerceptionResponse,
+    ProjectHeatmapResponse,
     ResponseItem,
+    RunBreakdownResponse,
     RunDetailResponse,
     RunResponse,
+    RunTermBreakdownItem,
     TrajectoryResponse,
 )
 
@@ -189,3 +195,99 @@ async def get_perception_breakdown(project_id: str) -> PerceptionBreakdownRespon
     term_rows = await term_repo.list_active_term_ids_and_names(project_id)
     term_names = {row["id"]: row["name"] for row in term_rows}
     return await run_service.get_perception_breakdown(project_id, term_names)
+
+
+# ---------------------------------------------------------------------------
+# 8) GET /api/runs/{run_id}/breakdown
+# ---------------------------------------------------------------------------
+
+
+@router.get("/runs/{run_id}/breakdown")
+async def get_run_breakdown(
+    run_id: str,
+    provider: str | None = Query(default=None),
+) -> RunBreakdownResponse:
+    """Per-term brand mention summary for a single run."""
+    run = await run_repo.get_run(run_id)
+    if not run:
+        raise HTTPException(status_code=404, detail="Run not found")
+    rows = await run_repo.get_run_term_breakdown(run_id, provider)
+    terms = [
+        RunTermBreakdownItem(
+            term_id=row["term_id"],
+            term_name=row["term_name"],
+            total_responses=row["total_responses"],
+            brand_mentions=row["brand_mentions"],
+            mention_pct=(
+                row["brand_mentions"] / row["total_responses"]
+                if row["total_responses"] > 0 else 0.0
+            ),
+        )
+        for row in rows
+    ]
+    return RunBreakdownResponse(run_id=run_id, provider=provider, terms=terms)
+
+
+# ---------------------------------------------------------------------------
+# 9) GET /api/projects/{project_id}/heatmap
+# ---------------------------------------------------------------------------
+
+
+@router.get("/projects/{project_id}/heatmap")
+async def get_project_heatmap(
+    project_id: str,
+    provider: str | None = Query(default=None),
+) -> ProjectHeatmapResponse:
+    """Project heatmap: rows=runs, columns=terms, cells=brand mention %."""
+    await get_project_or_404(project_id)
+    rows = await run_repo.get_project_heatmap(project_id, provider)
+    available_providers = await run_repo.get_project_providers(project_id)
+
+    # Build ordered term list and per-run data
+    term_order: list[str] = []
+    term_id_map: dict[str, str] = {}  # term_id → term_name
+    run_data: dict[str, dict[str, object]] = {}  # run_id → {run_date, cells}
+
+    for row in rows:
+        tid = row["term_id"]
+        if tid not in term_id_map:
+            term_id_map[tid] = row["term_name"]
+            term_order.append(tid)
+        rid = row["run_id"]
+        if rid not in run_data:
+            run_data[rid] = {"run_date": row["run_date"], "cells": {}}
+        total = row["total_responses"]
+        pct = row["brand_mentions"] / total if total > 0 else 0.0
+        run_data[rid]["cells"][tid] = pct  # type: ignore[index]
+
+    # Build ordered column names
+    term_names = [term_id_map[tid] for tid in term_order]
+
+    # Build HeatmapRow objects — one per run, cells aligned to term_order
+    heatmap_rows = []
+    for rid, rdata in run_data.items():
+        cells: list[HeatmapCell] = []
+        for tid in term_order:
+            pct_val = rdata["cells"].get(tid)  # type: ignore[union-attr]
+            cells.append(
+                HeatmapCell(
+                    term_id=tid,
+                    term_name=term_id_map[tid],
+                    mention_pct=float(pct_val) if pct_val is not None else None,
+                )
+            )
+        heatmap_rows.append(
+            HeatmapRow(
+                run_id=rid,
+                run_date=datetime.fromisoformat(str(rdata["run_date"])),
+                cells=cells,
+            )
+        )
+
+    return ProjectHeatmapResponse(
+        project_id=project_id,
+        provider=provider,
+        terms=term_names,
+        rows=heatmap_rows,
+        available_providers=available_providers,
+    )
